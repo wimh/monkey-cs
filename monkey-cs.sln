@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "libmonkey", "libmonkey\libmonkey.csproj", "{393BA334-FAFB-42C1-9E66-4CA7FE48405A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "libmonkey.test", "libmonkey.test\libmonkey.test.csproj", "{83723B99-8C2B-4482-87AF-36B84EFD7773}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{393BA334-FAFB-42C1-9E66-4CA7FE48405A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{393BA334-FAFB-42C1-9E66-4CA7FE48405A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{393BA334-FAFB-42C1-9E66-4CA7FE48405A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83723B99-8C2B-4482-87AF-36B84EFD7773}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83723B99-8C2B-4482-87AF-36B84EFD7773}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83723B99-8C2B-4482-87AF-36B84EFD7773}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83723B99-8C2B-4482-87AF-36B84EFD7773}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
