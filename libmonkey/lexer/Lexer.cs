@@ -19,6 +19,9 @@ namespace libmonkey.lexer
         public Token NextToken()
         {
             Token tok;
+
+            SkipWhitespace();
+            
             switch (_ch)
             {
                 case '=':
@@ -49,12 +52,47 @@ namespace libmonkey.lexer
                     tok = new Token(Token.Tokens.Eof, "");
                     break;
                 default:
-                    tok = new Token(Token.Tokens.Illegal, _ch.ToString());
+                    if (IsLetter(_ch))
+                    {
+                        var identifier = ReadIdentifier();
+                        tok = new Token(Token.LookupIdent(identifier), identifier);
+                        return tok;
+                    }
+                    else if (IsDigit(_ch))
+                    {
+                        var number = ReadNumber();
+                        tok = new Token(Token.Tokens.Int, number);
+                        return tok;
+                    }
+                    else
+                        tok = new Token(Token.Tokens.Illegal, _ch.ToString());
                     break;
             }
 
             ReadChar();
             return tok;
+        }
+
+        private void SkipWhitespace()
+        {
+            while (_ch == ' ' || _ch == '\t' || _ch == '\n' || _ch == '\r')
+                ReadChar();
+        }
+
+        private string ReadIdentifier()
+        {
+            var startPosition = _position;
+            while(IsLetter(_ch))
+                ReadChar();
+            return _input.Substring(startPosition, _position - startPosition);
+        }
+
+        private string ReadNumber()
+        {
+            var startPosition = _position;
+            while(IsDigit(_ch))
+                ReadChar();
+            return _input.Substring(startPosition, _position - startPosition);
         }
 
         private void ReadChar()
@@ -66,6 +104,16 @@ namespace libmonkey.lexer
 
             _position = _readPosition;
             _readPosition++;
+        }
+        
+        private static bool IsLetter(char ch)
+        {
+            return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_';
+        }
+
+        private static bool IsDigit(char ch)
+        {
+            return '0' <= ch && ch <= '9';
         }
     }
 }

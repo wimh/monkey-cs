@@ -1,8 +1,9 @@
-﻿namespace libmonkey.token
+﻿using System.Collections.Generic;
+
+namespace libmonkey.token
 {
     public struct Token
     {
-        // in case I do need strings: https://stackoverflow.com/questions/424366/c-sharp-string-enums
         public enum Tokens {
             Illegal,
             Eof,
@@ -29,13 +30,27 @@
             Let,
         }
 
-        public Tokens Type;
-        public string Literal;
+        private static readonly Dictionary<string, Tokens> Keywords = new Dictionary<string, Tokens>
+        {
+            {"fn", Tokens.Function},
+            {"let", Tokens.Let},
+        };
+
+        public readonly Tokens Type;
+        public readonly string Literal;
 
         public Token(Tokens type, string literal)
         {
             Type = type;
             Literal = literal;
+        }
+
+        public static Tokens LookupIdent(string ident)
+        {
+            if (Keywords.ContainsKey(ident))
+                return Keywords[ident];
+
+            return Tokens.Ident;
         }
     }
 }
