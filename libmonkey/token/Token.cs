@@ -72,5 +72,10 @@ namespace libmonkey.token
 
             return Tokens.Ident;
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0} {1}", Type, Literal);
+        }
     }
 }
