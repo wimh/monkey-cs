@@ -1,5 +1,6 @@
 using libmonkey.lexer;
 using libmonkey.token;
+using MoreLinq;
 using NUnit.Framework;
 
 namespace libmonkey.test
@@ -106,17 +107,15 @@ if (5 < 10) {
                 new Token(Token.Tokens.NotEq, "!="),
                 new Token(Token.Tokens.Int, "9"),
                 new Token(Token.Tokens.Semicolon, ";"),
-                new Token(Token.Tokens.Eof, ""),
             };
 
             var lexer = new Lexer(input);
 
-            foreach (var expectedToken in expectedTokens)
+            var tokens = expectedTokens.EquiZip(lexer, (e, a) => new {Expected = e, Actual = a});
+            foreach(var token in tokens)
             {
-                var token = lexer.NextToken();
-                
-                Assert.AreEqual(expectedToken.Type,token.Type);
-                Assert.AreEqual(expectedToken.Literal,token.Literal);
+                Assert.AreEqual(token.Expected.Type,token.Actual.Type);
+                Assert.AreEqual(token.Expected.Literal,token.Actual.Literal);
             }
         }
     }

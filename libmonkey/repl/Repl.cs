@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using libmonkey.lexer;
-using libmonkey.token;
 
 namespace libmonkey.repl
 {
@@ -17,8 +16,8 @@ namespace libmonkey.repl
                 var line = input.ReadLine();
 
                 var lexer = new Lexer(line);
-                
-                for(var token=lexer.NextToken();token.Type!=Token.Tokens.Eof;token=lexer.NextToken())
+
+                foreach (var token in lexer)
                 {
                     output.WriteLine("{0}", token);
                 }

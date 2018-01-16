@@ -1,8 +1,10 @@
-﻿using libmonkey.token;
+﻿using System.Collections;
+using System.Collections.Generic;
+using libmonkey.token;
 
 namespace libmonkey.lexer
 {
-    public class Lexer
+    public class Lexer : IEnumerable<Token>
     {
         private readonly string _input;
         private int _position;
@@ -18,7 +20,7 @@ namespace libmonkey.lexer
             ReadChar();
         }
 
-        public Token NextToken()
+        private Token NextToken()
         {
             Token tok;
 
@@ -105,6 +107,19 @@ namespace libmonkey.lexer
 
             ReadChar();
             return tok;
+        }
+
+        public IEnumerator<Token> GetEnumerator()
+        {
+            for (var token = NextToken(); token.Type != Token.Tokens.Eof; token = NextToken())
+            {
+                yield return token;
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         private void SkipWhitespace()
