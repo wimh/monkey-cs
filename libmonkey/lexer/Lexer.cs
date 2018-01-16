@@ -27,7 +27,14 @@ namespace libmonkey.lexer
             switch (_ch)
             {
                 case '=':
-                    tok = new Token(Token.Tokens.Assign, _ch.ToString());
+                    if (PeekChar() == '=')
+                    {
+                        var ch1 = _ch.ToString();
+                        ReadChar();
+                        tok = new Token(Token.Tokens.Eq, ch1 + _ch);
+                    }
+                    else
+                        tok = new Token(Token.Tokens.Assign, _ch.ToString());
                     break;
                 case ';':
                     tok = new Token(Token.Tokens.Semicolon, _ch.ToString());
@@ -48,7 +55,14 @@ namespace libmonkey.lexer
                     tok = new Token(Token.Tokens.Minus, _ch.ToString());
                     break;
                 case '!':
-                    tok = new Token(Token.Tokens.Bang, _ch.ToString());
+                    if (PeekChar() == '=')
+                    {
+                        var ch1 = _ch.ToString();
+                        ReadChar();
+                        tok = new Token(Token.Tokens.NotEq, ch1 + _ch);
+                    }
+                    else
+                        tok = new Token(Token.Tokens.Bang, _ch.ToString());
                     break;
                 case '/':
                     tok = new Token(Token.Tokens.Slash, _ch.ToString());
@@ -117,13 +131,17 @@ namespace libmonkey.lexer
 
         private void ReadChar()
         {
-            if (_readPosition >= _input.Length)
-                _ch = EofChar;
-            else
-                _ch = _input[_readPosition];
+            _ch = PeekChar();
 
             _position = _readPosition;
             _readPosition++;
+        }
+
+        private char PeekChar()
+        {
+            if (_readPosition >= _input.Length)
+                return EofChar;
+            return _input[_readPosition];
         }
         
         private static bool IsLetter(char ch)

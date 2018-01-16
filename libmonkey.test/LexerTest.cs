@@ -26,6 +26,9 @@ if (5 < 10) {
 } else {
   return false;
 }
+
+10 == 10;
+9 != 9;
 ";
 
             var expectedTokens = new[]
@@ -95,6 +98,14 @@ if (5 < 10) {
                 new Token(Token.Tokens.False, "false"),
                 new Token(Token.Tokens.Semicolon, ";"),
                 new Token(Token.Tokens.RBrace, "}"),
+                new Token(Token.Tokens.Int, "10"),
+                new Token(Token.Tokens.Eq, "=="),
+                new Token(Token.Tokens.Int, "10"),
+                new Token(Token.Tokens.Semicolon, ";"),
+                new Token(Token.Tokens.Int, "9"),
+                new Token(Token.Tokens.NotEq, "!="),
+                new Token(Token.Tokens.Int, "9"),
+                new Token(Token.Tokens.Semicolon, ";"),
                 new Token(Token.Tokens.Eof, ""),
             };
 

@@ -23,6 +23,9 @@ namespace libmonkey.token
             Lt,
             Gt,
             
+            Eq,
+            NotEq,
+            
             // Delimiters
             Comma,
             Semicolon,
