@@ -111,7 +111,7 @@ if (5 < 10) {
 
             var lexer = new Lexer(input);
 
-            var tokens = expectedTokens.EquiZip(lexer, (e, a) => new {Expected = e, Actual = a});
+            var tokens = expectedTokens.EquiZip(lexer.Tokens, (e, a) => new {Expected = e, Actual = a});
             foreach(var token in tokens)
             {
                 Assert.AreEqual(token.Expected.Type,token.Actual.Type);

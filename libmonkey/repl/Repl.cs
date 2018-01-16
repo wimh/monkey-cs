@@ -17,7 +17,7 @@ namespace libmonkey.repl
 
                 var lexer = new Lexer(line);
 
-                foreach (var token in lexer)
+                foreach (var token in lexer.Tokens)
                 {
                     output.WriteLine("{0}", token);
                 }

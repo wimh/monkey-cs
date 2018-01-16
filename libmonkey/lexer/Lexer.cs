@@ -4,7 +4,7 @@ using libmonkey.token;
 
 namespace libmonkey.lexer
 {
-    public class Lexer : IEnumerable<Token>
+    public class Lexer
     {
         private readonly string _input;
         private int _position;
@@ -16,9 +16,12 @@ namespace libmonkey.lexer
         public Lexer(string input)
         {
             _input = input;
-            
+            Tokens = new TokensImp(this);
+
             ReadChar();
         }
+
+        public IEnumerable<Token> Tokens { get; }
 
         private Token NextToken()
         {
@@ -109,17 +112,27 @@ namespace libmonkey.lexer
             return tok;
         }
 
-        public IEnumerator<Token> GetEnumerator()
+        private class TokensImp : IEnumerable<Token>
         {
-            for (var token = NextToken(); token.Type != Token.Tokens.Eof; token = NextToken())
+            private readonly Lexer _parent;
+            
+            internal TokensImp(Lexer parent)
             {
-                yield return token;
+                _parent = parent;
             }
-        }
+            
+            public IEnumerator<Token> GetEnumerator()
+            {
+                for (var token = _parent.NextToken(); token.Type != Token.Tokens.Eof; token = _parent.NextToken())
+                {
+                    yield return token;
+                }
+            }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
         }
 
         private void SkipWhitespace()
