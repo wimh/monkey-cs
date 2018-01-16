@@ -18,6 +18,14 @@ let add = fn(x,y) {
 };
 
 let result = add(five, ten);
+!-/*5;
+5 < 10 > 5;
+
+if (5 < 10) {
+  return true;
+} else {
+  return false;
+}
 ";
 
             var expectedTokens = new[]
@@ -58,6 +66,35 @@ let result = add(five, ten);
                 new Token(Token.Tokens.Ident, "ten"),
                 new Token(Token.Tokens.RParen, ")"),
                 new Token(Token.Tokens.Semicolon, ";"),
+                new Token(Token.Tokens.Bang, "!"),
+                new Token(Token.Tokens.Minus, "-"),
+                new Token(Token.Tokens.Slash, "/"),
+                new Token(Token.Tokens.Asterisk, "*"),
+                new Token(Token.Tokens.Int, "5"),
+                new Token(Token.Tokens.Semicolon, ";"),
+                new Token(Token.Tokens.Int, "5"),
+                new Token(Token.Tokens.Lt, "<"),
+                new Token(Token.Tokens.Int, "10"),
+                new Token(Token.Tokens.Gt, ">"),
+                new Token(Token.Tokens.Int, "5"),
+                new Token(Token.Tokens.Semicolon, ";"),
+                new Token(Token.Tokens.If, "if"),
+                new Token(Token.Tokens.LParen, "("),
+                new Token(Token.Tokens.Int, "5"),
+                new Token(Token.Tokens.Lt, "<"),
+                new Token(Token.Tokens.Int, "10"),
+                new Token(Token.Tokens.RParen, ")"),
+                new Token(Token.Tokens.LBrace, "{"),
+                new Token(Token.Tokens.Return, "return"),
+                new Token(Token.Tokens.True, "true"),
+                new Token(Token.Tokens.Semicolon, ";"),
+                new Token(Token.Tokens.RBrace, "}"),
+                new Token(Token.Tokens.Else, "else"),
+                new Token(Token.Tokens.LBrace, "{"),
+                new Token(Token.Tokens.Return, "return"),
+                new Token(Token.Tokens.False, "false"),
+                new Token(Token.Tokens.Semicolon, ";"),
+                new Token(Token.Tokens.RBrace, "}"),
                 new Token(Token.Tokens.Eof, ""),
             };
 

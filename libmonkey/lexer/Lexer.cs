@@ -9,6 +9,8 @@ namespace libmonkey.lexer
         private int _readPosition;
         private char _ch;
 
+        private const char EofChar = '\0';
+
         public Lexer(string input)
         {
             _input = input;
@@ -42,13 +44,31 @@ namespace libmonkey.lexer
                 case '+':
                     tok = new Token(Token.Tokens.Plus, _ch.ToString());
                     break;
+                case '-':
+                    tok = new Token(Token.Tokens.Minus, _ch.ToString());
+                    break;
+                case '!':
+                    tok = new Token(Token.Tokens.Bang, _ch.ToString());
+                    break;
+                case '/':
+                    tok = new Token(Token.Tokens.Slash, _ch.ToString());
+                    break;
+                case '*':
+                    tok = new Token(Token.Tokens.Asterisk, _ch.ToString());
+                    break;
+                case '<':
+                    tok = new Token(Token.Tokens.Lt, _ch.ToString());
+                    break;
+                case '>':
+                    tok = new Token(Token.Tokens.Gt, _ch.ToString());
+                    break;
                 case '{':
                     tok = new Token(Token.Tokens.LBrace, _ch.ToString());
                     break;
                 case '}':
                     tok = new Token(Token.Tokens.RBrace, _ch.ToString());
                     break;
-                case '\0':
+                case EofChar:
                     tok = new Token(Token.Tokens.Eof, "");
                     break;
                 default:
@@ -98,7 +118,7 @@ namespace libmonkey.lexer
         private void ReadChar()
         {
             if (_readPosition >= _input.Length)
-                _ch = '\0';
+                _ch = EofChar;
             else
                 _ch = _input[_readPosition];
 

@@ -15,6 +15,13 @@ namespace libmonkey.token
             // Operators
             Assign,
             Plus,
+            Minus,
+            Bang,
+            Asterisk,
+            Slash,
+            
+            Lt,
+            Gt,
             
             // Delimiters
             Comma,
@@ -28,12 +35,22 @@ namespace libmonkey.token
             // Keywords
             Function,
             Let,
+            True,
+            False,
+            If,
+            Else,
+            Return,
         }
 
         private static readonly Dictionary<string, Tokens> Keywords = new Dictionary<string, Tokens>
         {
             {"fn", Tokens.Function},
             {"let", Tokens.Let},
+            {"true", Tokens.True},
+            {"false", Tokens.False},
+            {"if", Tokens.If},
+            {"else", Tokens.Else},
+            {"return", Tokens.Return},
         };
 
         public readonly Tokens Type;
