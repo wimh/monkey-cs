@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using libmonkey.token;
+using libmonkey.utils;
 
 namespace libmonkey.lexer
 {
@@ -21,7 +22,7 @@ namespace libmonkey.lexer
             ReadChar();
         }
 
-        public IEnumerable<Token> Tokens { get; }
+        public IPeekableEnumerable<Token> Tokens { get; }
 
         private Token NextToken()
         {
@@ -112,7 +113,7 @@ namespace libmonkey.lexer
             return tok;
         }
 
-        private class TokensImp : IEnumerable<Token>
+        private class TokensImp : IPeekableEnumerable<Token>
         {
             private readonly Lexer _parent;
             
@@ -120,7 +121,12 @@ namespace libmonkey.lexer
             {
                 _parent = parent;
             }
-            
+
+            public IPeekableEnumerator<Token> GetPeekableEnumerator()
+            {
+                return new PeekableEnumerator<Token>(GetEnumerator());
+            }
+
             public IEnumerator<Token> GetEnumerator()
             {
                 for (var token = _parent.NextToken(); token.Type != Token.Tokens.Eof; token = _parent.NextToken())

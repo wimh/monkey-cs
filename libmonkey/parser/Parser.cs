@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using libmonkey.ast;
+﻿using libmonkey.ast;
 using libmonkey.lexer;
 using libmonkey.token;
+using libmonkey.utils;
 
 namespace libmonkey.parser
 {
-
     public class Parser
     {
         private readonly Lexer _lexer;
@@ -19,9 +18,9 @@ namespace libmonkey.parser
         {
             var program = new Program();
 
-            using (var tokens = _lexer.Tokens.GetEnumerator())
+            using (var tokens = _lexer.Tokens.GetPeekableEnumerator())
             {
-                while (tokens.MoveNext())
+                while (tokens.PeekNext != null)
                 {
                     program.AddStatement(ParseStatement(tokens));
                 }
@@ -30,29 +29,29 @@ namespace libmonkey.parser
             return program;
         }
 
-        private static IStatement ParseStatement(IEnumerator<Token> tokens)
+        private static IStatement ParseStatement(IPeekableEnumerator<Token> tokens)
         {
-            switch (tokens.Current.Type)
+            switch (tokens.PeekNext?.Type)
             {
-                    case Token.Tokens.Let:
-                        return ParseLetStatement(tokens);
+                case null:
+                    return null;
+                case Token.Tokens.Let:
+                    return ParseLetStatement(tokens);
             }
 
             return null;
         }
 
-        private static IStatement ParseLetStatement(IEnumerator<Token> tokens)
+        private static IStatement ParseLetStatement(IPeekableEnumerator<Token> tokens)
         {
-            if (tokens.Current.Type != Token.Tokens.Let)
+            if (!ExpectNextToken(tokens, Token.Tokens.Let)) 
                 return null;
 
-            if (!tokens.MoveNext()) return null;
-            if (tokens.Current.Type != Token.Tokens.Ident)
+            if (!ExpectNextToken(tokens, Token.Tokens.Ident)) 
                 return null;
             var identifier = new Identifier(tokens.Current);
 
-            if (!tokens.MoveNext()) return null;
-            if (tokens.Current.Type != Token.Tokens.Assign)
+            if (!ExpectNextToken(tokens, Token.Tokens.Assign))                
                 return null;
 
             if (!tokens.MoveNext()) return null;
@@ -64,6 +63,14 @@ namespace libmonkey.parser
             }
 
             return null;
+        }
+
+        private static bool ExpectNextToken(IPeekableEnumerator<Token> tokens, Token.Tokens ident)
+        {
+            if (tokens.PeekNext?.Type != ident)
+                return false;
+            tokens.MoveNext();
+            return true;
         }
     }
 }

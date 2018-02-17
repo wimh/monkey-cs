@@ -2,7 +2,7 @@
 
 namespace libmonkey.token
 {
-    public struct Token
+    public class Token
     {
         public enum Tokens {
             Illegal,

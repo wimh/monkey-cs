@@ -63,6 +63,38 @@ namespace libmonkey.test
             CompareListToPeekableEnumerator(list, sut);
         }
 
+        private class YieldReturnEnum : IEnumerable<string>
+        {
+            public IEnumerator<string> GetEnumerator()
+            {
+                yield return "1";
+                yield return "2";
+                yield return "3";
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+        }
+        
+        [Test]
+        public void EnumerateYieldReturn()
+        {
+            var list = new List<string>(new[] {"1", "2", "3"});
+            var sut = new PeekableEnumerator<string>(new YieldReturnEnum().GetEnumerator());
+
+            CompareListToPeekableEnumerator(list, sut);
+        }
+        
+        [Test]
+        public void ThrowsResetUnavailable()
+        {
+            var sut = new PeekableEnumerator<string>(new YieldReturnEnum().GetEnumerator());
+
+            Assert.Throws<System.NotSupportedException>(() => sut.Reset());
+        }
+
         private void CompareListToPeekableEnumerator(List<string> list, IPeekableEnumerator<string> enumerator)
         {
             Assert.AreEqual(list[0], enumerator.PeekNext);
@@ -81,11 +113,18 @@ namespace libmonkey.test
             Assert.IsNull(enumerator.Current);
             Assert.IsNull(enumerator.PeekNext);
 
-            enumerator.Reset();
-            Assert.IsNull(enumerator.Current);
-            Assert.AreEqual(list[0], enumerator.PeekNext);
-            Assert.IsTrue(enumerator.MoveNext());
-            Assert.AreEqual(list[0], enumerator.Current);
+            try
+            {
+                enumerator.Reset();
+                Assert.IsNull(enumerator.Current);
+                Assert.AreEqual(list[0], enumerator.PeekNext);
+                Assert.IsTrue(enumerator.MoveNext());
+                Assert.AreEqual(list[0], enumerator.Current);
+            }
+            catch (System.NotSupportedException)
+            {
+                // ignore if enumerator.Reset() is unavailable
+            }
         }
     }
 }

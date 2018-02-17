@@ -44,7 +44,7 @@ namespace libmonkey.utils
 
         object IEnumerator.Current => Current;
 
-        public T PeekNext => _inner.Current;
+        public T PeekNext => !_canMoveNext ? null : _inner.Current;
 
         public void Dispose()
         {
