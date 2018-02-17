@@ -7,11 +7,11 @@ namespace libmonkey.token
         public enum Tokens {
             Illegal,
             Eof,
-            
+
             // Identifiers + literals
             Ident, // add, foobar, x, y, ...
             Int,
-            
+
             // Operators
             Assign,
             Plus,
@@ -19,22 +19,22 @@ namespace libmonkey.token
             Bang,
             Asterisk,
             Slash,
-            
+
             Lt,
             Gt,
-            
+
             Eq,
             NotEq,
-            
+
             // Delimiters
             Comma,
             Semicolon,
-            
+
             LParen,
             RParen,
             LBrace,
             RBrace,
-            
+
             // Keywords
             Function,
             Let,

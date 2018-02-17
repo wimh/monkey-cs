@@ -44,14 +44,14 @@ namespace libmonkey.parser
 
         private static IStatement ParseLetStatement(IPeekableEnumerator<Token> tokens)
         {
-            if (!ExpectNextToken(tokens, Token.Tokens.Let)) 
+            if (!ExpectNextToken(tokens, Token.Tokens.Let))
                 return null;
 
-            if (!ExpectNextToken(tokens, Token.Tokens.Ident)) 
+            if (!ExpectNextToken(tokens, Token.Tokens.Ident))
                 return null;
             var identifier = new Identifier(tokens.Current);
 
-            if (!ExpectNextToken(tokens, Token.Tokens.Assign))                
+            if (!ExpectNextToken(tokens, Token.Tokens.Assign))
                 return null;
 
             if (!tokens.MoveNext()) return null;

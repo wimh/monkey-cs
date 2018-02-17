@@ -53,7 +53,7 @@ namespace libmonkey.test
             sut.Reset();
             Assert.IsNull(sut.Current);
         }
-        
+
         [Test]
         public void ListIncludesNull()
         {
@@ -77,7 +77,7 @@ namespace libmonkey.test
                 return GetEnumerator();
             }
         }
-        
+
         [Test]
         public void EnumerateYieldReturn()
         {
@@ -86,7 +86,7 @@ namespace libmonkey.test
 
             CompareListToPeekableEnumerator(list, sut);
         }
-        
+
         [Test]
         public void ThrowsResetUnavailable()
         {

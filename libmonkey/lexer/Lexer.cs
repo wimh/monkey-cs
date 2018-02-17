@@ -29,7 +29,7 @@ namespace libmonkey.lexer
             Token tok;
 
             SkipWhitespace();
-            
+
             switch (_ch)
             {
                 case '=':
@@ -116,7 +116,7 @@ namespace libmonkey.lexer
         private class TokensImp : IPeekableEnumerable<Token>
         {
             private readonly Lexer _parent;
-            
+
             internal TokensImp(Lexer parent)
             {
                 _parent = parent;
@@ -177,7 +177,7 @@ namespace libmonkey.lexer
                 return EofChar;
             return _input[_readPosition];
         }
-        
+
         private static bool IsLetter(char ch)
         {
             return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_';
