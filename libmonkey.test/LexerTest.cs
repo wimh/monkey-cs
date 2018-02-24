@@ -118,5 +118,22 @@ if (5 < 10) {
                 Assert.AreEqual(token.Expected.Literal,token.Actual.Literal);
             }
         }
+
+        [Test]
+        public void TokensReturnsIndependentEnumerator()
+        {
+            var lexer = new Lexer("1 + 2");
+
+            int count = 0;
+            foreach (var unused1 in lexer.Tokens)
+            {
+                foreach (var unused2 in lexer.Tokens)
+                {
+                    count++;
+                }
+            }
+
+            Assert.AreEqual(9, count);
+        }
     }
 }
