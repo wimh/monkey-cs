@@ -50,6 +50,8 @@ namespace libmonkey.parser
                     return null;
                 case Token.Tokens.Let:
                     return ParseLetStatement(tokens);
+                case Token.Tokens.Return:
+                    return ParseReturnStatement(tokens);
             }
 
             return null;
@@ -73,6 +75,22 @@ namespace libmonkey.parser
             {
                 if (tokens.Current.Type == Token.Tokens.Semicolon)
                     return new LetStatement(identifier, null);
+            }
+
+            return null;
+        }
+
+        private IStatement ParseReturnStatement(IPeekableEnumerator<Token> tokens)
+        {
+            if (!ExpectNextToken(tokens, Token.Tokens.Return))
+                return null;
+
+            if (!tokens.MoveNext()) return null;
+            // TODO: parse expression
+            while (tokens.MoveNext())
+            {
+                if (tokens.Current.Type == Token.Tokens.Semicolon)
+                    return new ReturnStatement(null);
             }
 
             return null;

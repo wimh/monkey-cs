@@ -55,5 +55,25 @@ namespace libmonkey.test
 
             Assert.AreEqual(expectedError, sut.Errors.First());
         }
+
+        [Test]
+        [TestCase("return 5;")]
+        [TestCase("return x;")]
+        [TestCase("return sqrt(9);")]
+        public void ParseReturnStatement(string input)
+        {
+            var sut = new Parser(new Lexer(input));
+            var program = sut.ParseProgram();
+
+            Assert.NotNull(program);
+            Assert.AreEqual(0, sut.Errors.Count());
+
+            var statements = program.Statements.ToArray();
+            Assert.AreEqual(1, statements.Length);
+
+            var returnStatement = statements[0] as ReturnStatement;
+            Assert.NotNull(returnStatement);
+            Assert.IsNull(returnStatement.Expression); // TODO
+        }
     }
 }
