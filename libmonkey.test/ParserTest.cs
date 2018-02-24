@@ -39,5 +39,21 @@ namespace libmonkey.test
             Assert.AreEqual(ident, letstatement.Identifier.Value);
             Assert.IsNull(letstatement.Expression); // TODO
         }
+
+        [Test]
+        [TestCase("let x 5;", "expected Assign, got Int 5 instead")]
+        [TestCase("let = 10;", "expected Ident, got Assign = instead")]
+        [TestCase("let 838485;", "expected Ident, got Int 838485 instead")]
+        [TestCase("let", "expected Ident, got <EOF> instead")]
+        public void TestLetStatementParseErrors(string input, string expectedError)
+        {
+            var sut = new Parser(new Lexer(input));
+
+            var program = sut.ParseProgram();
+            Assert.NotNull(program);
+            Assert.AreEqual(0, program.Statements.Count());
+
+            Assert.AreEqual(expectedError, sut.Errors.First());
+        }
     }
 }

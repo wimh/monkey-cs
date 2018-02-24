@@ -1,4 +1,5 @@
-﻿using libmonkey.ast;
+﻿using System.Collections.Generic;
+using libmonkey.ast;
 using libmonkey.lexer;
 using libmonkey.token;
 using libmonkey.utils;
@@ -8,10 +9,18 @@ namespace libmonkey.parser
     public class Parser
     {
         private readonly Lexer _lexer;
+        private readonly List<string> _errors=new List<string>();
 
         public Parser(Lexer lexer)
         {
             _lexer = lexer;
+        }
+
+        public IEnumerable<string> Errors => _errors;
+
+        private void AddError(string error)
+        {
+            _errors.Add(error);
         }
 
         public IProgram ParseProgram()
@@ -22,14 +31,18 @@ namespace libmonkey.parser
             {
                 while (tokens.PeekNext != null)
                 {
-                    program.AddStatement(ParseStatement(tokens));
+                    var statement = ParseStatement(tokens);
+                    if (statement != null)
+                        program.AddStatement(statement);
+                    else
+                        tokens.MoveNext();
                 }
             }
 
             return program;
         }
 
-        private static IStatement ParseStatement(IPeekableEnumerator<Token> tokens)
+        private IStatement ParseStatement(IPeekableEnumerator<Token> tokens)
         {
             switch (tokens.PeekNext?.Type)
             {
@@ -42,7 +55,7 @@ namespace libmonkey.parser
             return null;
         }
 
-        private static IStatement ParseLetStatement(IPeekableEnumerator<Token> tokens)
+        private IStatement ParseLetStatement(IPeekableEnumerator<Token> tokens)
         {
             if (!ExpectNextToken(tokens, Token.Tokens.Let))
                 return null;
@@ -65,10 +78,16 @@ namespace libmonkey.parser
             return null;
         }
 
-        private static bool ExpectNextToken(IPeekableEnumerator<Token> tokens, Token.Tokens ident)
+        private bool ExpectNextToken(IPeekableEnumerator<Token> tokens, Token.Tokens ident)
         {
             if (tokens.PeekNext?.Type != ident)
+            {
+                AddError(string.Format("expected {0}, got {1} instead",
+                    ident,
+                    tokens.PeekNext?.ToString() ?? "<EOF>"));
                 return false;
+            }
+
             tokens.MoveNext();
             return true;
         }
