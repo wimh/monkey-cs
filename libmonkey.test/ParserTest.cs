@@ -19,7 +19,7 @@ namespace libmonkey.test
 
             var lexer = new Lexer(input);
 
-            var sut = new Parser(lexer);
+            var sut = new Parser(lexer, new ExpressionParser());
             var program = sut.ParseProgram();
 
             Assert.NotNull(program);
@@ -47,7 +47,7 @@ namespace libmonkey.test
         [TestCase("let", "expected Ident, got <EOF> instead")]
         public void TestLetStatementParseErrors(string input, string expectedError)
         {
-            var sut = new Parser(new Lexer(input));
+            var sut = new Parser(new Lexer(input), new ExpressionParser());
 
             var program = sut.ParseProgram();
             Assert.NotNull(program);
@@ -62,7 +62,7 @@ namespace libmonkey.test
         [TestCase("return sqrt(9);")]
         public void ParseReturnStatement(string input)
         {
-            var sut = new Parser(new Lexer(input));
+            var sut = new Parser(new Lexer(input), new ExpressionParser());
             var program = sut.ParseProgram();
 
             Assert.NotNull(program);
@@ -74,6 +74,28 @@ namespace libmonkey.test
             var returnStatement = statements[0] as ReturnStatement;
             Assert.NotNull(returnStatement);
             Assert.IsNull(returnStatement.Expression); // TODO
+        }
+
+        [Test]
+        public void TestIdentifierExpression()
+        {
+            var input = "foobar;";
+
+            var sut = new Parser(new Lexer(input), new ExpressionParser());
+            var program = sut.ParseProgram();
+
+            Assert.AreEqual(0, sut.Errors.Count());
+
+            var statements = program.Statements.ToArray();
+            Assert.AreEqual(1, statements.Length);
+
+            var expression = statements[0] as ExpressionStatement;
+            Assert.NotNull(expression);
+            Assert.AreEqual("(foobar)", expression.ToString());
+
+            var identifier = expression.Expression as Identifier;
+            Assert.NotNull(identifier);
+            Assert.AreEqual("foobar", identifier.Value);
         }
     }
 }

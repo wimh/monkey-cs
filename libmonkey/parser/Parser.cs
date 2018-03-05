@@ -9,11 +9,13 @@ namespace libmonkey.parser
     public class Parser
     {
         private readonly Lexer _lexer;
+        private readonly IExpressionParser _expressionParser;
         private readonly List<string> _errors=new List<string>();
 
-        public Parser(Lexer lexer)
+        public Parser(Lexer lexer, IExpressionParser expressionParser)
         {
             _lexer = lexer;
+            _expressionParser = expressionParser;
         }
 
         public IEnumerable<string> Errors => _errors;
@@ -52,9 +54,23 @@ namespace libmonkey.parser
                     return ParseLetStatement(tokens);
                 case Token.Tokens.Return:
                     return ParseReturnStatement(tokens);
+                default:
+                    return ParseExpressionStatement(tokens);
             }
+        }
 
-            return null;
+        private IStatement ParseExpressionStatement(IPeekableEnumerator<Token> tokens)
+        {
+            var expression = _expressionParser.ParseExpression(tokens, Precedence.Lowest);
+            if (expression == null)
+                return null;
+
+            var statement=new ExpressionStatement(expression);
+
+            if (tokens.PeekNext?.Type == Token.Tokens.Semicolon)
+                tokens.MoveNext();
+
+            return statement;
         }
 
         private IStatement ParseLetStatement(IPeekableEnumerator<Token> tokens)
