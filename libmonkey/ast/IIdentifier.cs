@@ -1,6 +1,6 @@
 ﻿namespace libmonkey.ast
 {
-    public interface IIdentifier: INode
+    public interface IIdentifier: IExpression
     {
         string Value { get; }
     }

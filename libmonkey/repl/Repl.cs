@@ -6,7 +6,7 @@ namespace libmonkey.repl
     public class Repl
     {
         private const string Prompt = ">> ";
-        
+
         public void Start(StreamReader input, StreamWriter output)
         {
             while (true)

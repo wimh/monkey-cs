@@ -12,5 +12,10 @@ namespace libmonkey.ast
         {
             _statements.Add(statement);
         }
+
+        public override string ToString()
+        {
+            return string.Join("\n", _statements);
+        }
     }
 }
