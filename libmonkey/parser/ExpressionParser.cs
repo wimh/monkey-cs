@@ -9,19 +9,22 @@ namespace libmonkey.parser
     {
         private readonly Dictionary<Token.Tokens, PrefixParserFn> _prefixParserFns =
             new Dictionary<Token.Tokens, PrefixParserFn>();
+
         // ReSharper disable once CollectionNeverQueried.Local
         private readonly Dictionary<Token.Tokens, InfixParserFn> _infixParserFns =
             new Dictionary<Token.Tokens, InfixParserFn>();
 
         public ExpressionParser()
         {
+            // all Prefix and Infix parser functions start and end with tokens.Current
+            // ie. if they parse just one token, they don't advance
             RegisterPrefixParserFn(Token.Tokens.Ident, ParseIdentifier);
         }
 
         // ReSharper disable once UnusedParameter.Local
         public IExpression ParseExpression(IPeekableEnumerator<Token> tokens, Precedence precedence)
         {
-            if (!_prefixParserFns.TryGetValue(tokens.PeekNext.Type, out var prefix))
+            if (!_prefixParserFns.TryGetValue(tokens.Current.Type, out var prefix))
                 return null;
 
             var leftExp = prefix(tokens);
@@ -41,7 +44,6 @@ namespace libmonkey.parser
 
         private IExpression ParseIdentifier(IPeekableEnumerator<Token> tokens)
         {
-            tokens.MoveNext();
             return new Identifier(tokens.Current);
         }
     }

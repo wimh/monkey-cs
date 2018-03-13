@@ -10,7 +10,7 @@ namespace libmonkey.parser
     {
         private readonly Lexer _lexer;
         private readonly IExpressionParser _expressionParser;
-        private readonly List<string> _errors=new List<string>();
+        private readonly List<string> _errors = new List<string>();
 
         public Parser(Lexer lexer, IExpressionParser expressionParser)
         {
@@ -31,13 +31,11 @@ namespace libmonkey.parser
 
             using (var tokens = _lexer.Tokens.GetPeekableEnumerator())
             {
-                while (tokens.PeekNext != null)
+                while (tokens.MoveNext())
                 {
                     var statement = ParseStatement(tokens);
                     if (statement != null)
                         program.AddStatement(statement);
-                    else
-                        tokens.MoveNext();
                 }
             }
 
@@ -46,7 +44,7 @@ namespace libmonkey.parser
 
         private IStatement ParseStatement(IPeekableEnumerator<Token> tokens)
         {
-            switch (tokens.PeekNext?.Type)
+            switch (tokens.Current?.Type)
             {
                 case null:
                     return null;
@@ -65,7 +63,7 @@ namespace libmonkey.parser
             if (expression == null)
                 return null;
 
-            var statement=new ExpressionStatement(expression);
+            var statement = new ExpressionStatement(expression);
 
             if (tokens.PeekNext?.Type == Token.Tokens.Semicolon)
                 tokens.MoveNext();
@@ -75,17 +73,17 @@ namespace libmonkey.parser
 
         private IStatement ParseLetStatement(IPeekableEnumerator<Token> tokens)
         {
-            if (!ExpectNextToken(tokens, Token.Tokens.Let))
+            if (ExpectTokenAndAdvance(tokens, Token.Tokens.Let) == null)
                 return null;
 
-            if (!ExpectNextToken(tokens, Token.Tokens.Ident))
+            var identifierToken = ExpectTokenAndAdvance(tokens, Token.Tokens.Ident);
+            if (identifierToken == null)
                 return null;
-            var identifier = new Identifier(tokens.Current);
+            var identifier = new Identifier(identifierToken);
 
-            if (!ExpectNextToken(tokens, Token.Tokens.Assign))
+            if (ExpectTokenAndAdvance(tokens, Token.Tokens.Assign) == null)
                 return null;
 
-            if (!tokens.MoveNext()) return null;
             // TODO: parse expression
             while (tokens.MoveNext())
             {
@@ -98,10 +96,9 @@ namespace libmonkey.parser
 
         private IStatement ParseReturnStatement(IPeekableEnumerator<Token> tokens)
         {
-            if (!ExpectNextToken(tokens, Token.Tokens.Return))
+            if (ExpectTokenAndAdvance(tokens, Token.Tokens.Return) == null)
                 return null;
 
-            if (!tokens.MoveNext()) return null;
             // TODO: parse expression
             while (tokens.MoveNext())
             {
@@ -112,6 +109,7 @@ namespace libmonkey.parser
             return null;
         }
 
+        // ReSharper disable once UnusedMember.Local
         private bool ExpectNextToken(IPeekableEnumerator<Token> tokens, Token.Tokens ident)
         {
             if (tokens.PeekNext?.Type != ident)
@@ -122,8 +120,22 @@ namespace libmonkey.parser
                 return false;
             }
 
-            tokens.MoveNext();
             return true;
+        }
+
+        private Token ExpectTokenAndAdvance(IPeekableEnumerator<Token> tokens, Token.Tokens ident)
+        {
+            var currentToken = tokens.Current;
+            if (currentToken?.Type != ident)
+            {
+                AddError(string.Format("expected {0}, got {1} instead",
+                    ident,
+                    currentToken?.ToString() ?? "<EOF>"));
+                return null;
+            }
+
+            tokens.MoveNext();
+            return currentToken;
         }
     }
 }
