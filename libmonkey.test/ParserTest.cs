@@ -2,6 +2,9 @@
 using libmonkey.ast;
 using libmonkey.lexer;
 using libmonkey.parser;
+using libmonkey.token;
+using libmonkey.utils;
+using Moq;
 using NUnit.Framework;
 
 namespace libmonkey.test
@@ -77,25 +80,25 @@ namespace libmonkey.test
         }
 
         [Test]
-        public void TestIdentifierExpression()
+        public void TestExpression()
         {
-            var input = "foobar;";
+            var input = "5;";
 
-            var sut = new Parser(new Lexer(input), new ExpressionParser());
+            var expression = new Mock<IExpression>().Object;
+            var expressionParser = new Mock<IExpressionParser>();
+            expressionParser
+                .Setup(p => p.ParseExpression(It.IsAny<IPeekableEnumerator<Token>>(), It.IsAny<Precedence>()))
+                .Callback((IPeekableEnumerator<Token> enu, Precedence _) =>
+                {
+                    Assert.AreEqual(Token.Tokens.Int, enu.Current.Type);
+                })
+                .Returns(expression);
+
+            var sut = new Parser(new Lexer(input), expressionParser.Object);
             var program = sut.ParseProgram();
 
-            Assert.AreEqual(0, sut.Errors.Count());
-
-            var statements = program.Statements.ToArray();
-            Assert.AreEqual(1, statements.Length);
-
-            var expression = statements[0] as ExpressionStatement;
-            Assert.NotNull(expression);
-            Assert.AreEqual("(foobar)", expression.ToString());
-
-            var identifier = expression.Expression as Identifier;
-            Assert.NotNull(identifier);
-            Assert.AreEqual("foobar", identifier.Value);
+            var statement = program.Statements.OfType<ExpressionStatement>().Single();
+            Assert.AreSame(expression, statement.Expression);
         }
     }
 }
