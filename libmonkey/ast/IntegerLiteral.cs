@@ -1,17 +1,13 @@
-﻿using libmonkey.token;
-
-namespace libmonkey.ast
+﻿namespace libmonkey.ast
 {
     public class IntegerLiteral : IIntegerLiteral
     {
-        private readonly Token _token;
-
-        public IntegerLiteral(Token token)
+        public IntegerLiteral(int value)
         {
-            _token = token;
+            Value = value;
         }
 
-        public int Value => int.Parse(_token.Literal);
+        public int Value { get; private set; }
 
         public override string ToString()
         {

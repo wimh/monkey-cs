@@ -102,5 +102,27 @@ namespace libmonkey.test
             var statement = program.Statements.OfType<ExpressionStatement>().Single();
             Assert.AreSame(expression, statement.Expression);
         }
+
+        [Test]
+        public void TestInvalidExpression()
+        {
+            var input = "5;";
+
+            var expressionParser = new Mock<IExpressionParser>();
+            expressionParser
+                .Setup(p => p.ParseExpression(It.IsAny<IPeekableEnumerator<Token>>(), It.IsAny<Precedence>()))
+                .Callback((IPeekableEnumerator<Token> enu, Precedence _) =>
+                    {
+                        expressionParser.Raise(p => p.ParserError += null,
+                            expressionParser, "cannot parse!");
+                    })
+                .Returns<IExpression>(null);
+
+            var sut = new Parser(new Lexer(input), expressionParser.Object);
+            var program = sut.ParseProgram();
+
+            Assert.IsFalse(program.Statements.Any());
+            Assert.AreEqual("cannot parse!", sut.Errors.First());
+        }
     }
 }

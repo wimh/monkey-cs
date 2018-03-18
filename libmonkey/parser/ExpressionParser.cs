@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using libmonkey.ast;
 using libmonkey.token;
 using libmonkey.utils;
@@ -20,6 +21,13 @@ namespace libmonkey.parser
             // ie. if they parse just one token, they don't advance
             RegisterPrefixParserFn(Token.Tokens.Ident, ParseIdentifier);
             RegisterPrefixParserFn(Token.Tokens.Int, ParseIntegerLiteral);
+        }
+
+        public event EventHandler<string> ParserError;
+
+        private void OnParserError(string error)
+        {
+            ParserError?.Invoke(this, error);
         }
 
         // ReSharper disable once UnusedParameter.Local
@@ -50,7 +58,13 @@ namespace libmonkey.parser
 
         private IExpression ParseIntegerLiteral(IPeekableEnumerator<Token> tokens)
         {
-            return new IntegerLiteral(tokens.Current);
+            var inputString = tokens.Current.Literal;
+            if (!int.TryParse(inputString, out int value))
+            {
+                OnParserError($"{inputString} is not a valid integer.");
+                return null;
+            }
+            return new IntegerLiteral(value);
         }
     }
 }

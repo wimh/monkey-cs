@@ -44,5 +44,25 @@ namespace libmonkey.test
             // verify if enumerator has not been advanced
             Assert.AreEqual(Token.Tokens.Int, tokens.Current.Type);
         }
+
+        [Test]
+        public void TestInvalidIntegerLiteralExpression()
+        {
+            var input = "12345678901234567890;";
+            var tokens = new Lexer(input).Tokens.GetPeekableEnumerator();
+            tokens.MoveNext();
+
+            var sut = new ExpressionParser();
+            string actualError = null;
+            sut.ParserError += (s, a) => { actualError = a; };
+
+            var expression = sut.ParseExpression(tokens, Precedence.Lowest);
+
+            Assert.IsNull(expression);
+            Assert.AreEqual("12345678901234567890 is not a valid integer.", actualError);
+
+            // verify if enumerator has not been advanced
+            Assert.AreEqual(Token.Tokens.Int, tokens.Current.Type);
+        }
     }
 }

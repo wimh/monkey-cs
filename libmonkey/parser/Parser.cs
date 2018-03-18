@@ -16,6 +16,8 @@ namespace libmonkey.parser
         {
             _lexer = lexer;
             _expressionParser = expressionParser;
+
+            _expressionParser.ParserError += (s, a) => AddError(a);
         }
 
         public IEnumerable<string> Errors => _errors;
