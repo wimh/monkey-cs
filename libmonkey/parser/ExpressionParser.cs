@@ -53,7 +53,7 @@ namespace libmonkey.parser
 
         private IExpression ParseIdentifier(IPeekableEnumerator<Token> tokens)
         {
-            return new Identifier(tokens.Current);
+            return new Identifier(tokens.Current.Literal);
         }
 
         private IExpression ParseIntegerLiteral(IPeekableEnumerator<Token> tokens)

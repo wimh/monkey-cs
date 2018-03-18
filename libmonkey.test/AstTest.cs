@@ -1,5 +1,4 @@
 ﻿using libmonkey.ast;
-using libmonkey.token;
 using NUnit.Framework;
 
 namespace libmonkey.test
@@ -13,10 +12,8 @@ namespace libmonkey.test
             var p = new Program();
             p.AddStatement(
                 new LetStatement(
-                    new Identifier(
-                        new Token(Token.Tokens.Ident, "myVar")),
-                    new Identifier(
-                        new Token(Token.Tokens.Ident, "anotherVar"))));
+                    new Identifier("myVar"),
+                    new Identifier("anotherVar")));
             Assert.AreEqual("let myVar = anotherVar;", p.ToString());
         }
     }

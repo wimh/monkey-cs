@@ -1,17 +1,13 @@
-﻿using libmonkey.token;
-
-namespace libmonkey.ast
+﻿namespace libmonkey.ast
 {
     public class Identifier : IIdentifier
     {
-        private Token _token;
-
-        public Identifier(Token token)
+        public Identifier(string value)
         {
-            _token = token;
+            Value = value;
         }
 
-        public string Value => _token.Literal;
+        public string Value { get; }
 
         public override string ToString()
         {

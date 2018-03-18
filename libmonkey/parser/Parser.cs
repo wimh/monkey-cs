@@ -81,7 +81,7 @@ namespace libmonkey.parser
             var identifierToken = ExpectTokenAndAdvance(tokens, Token.Tokens.Ident);
             if (identifierToken == null)
                 return null;
-            var identifier = new Identifier(identifierToken);
+            var identifier = new Identifier(identifierToken.Literal);
 
             if (ExpectTokenAndAdvance(tokens, Token.Tokens.Assign) == null)
                 return null;
