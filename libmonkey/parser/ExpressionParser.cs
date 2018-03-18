@@ -19,6 +19,7 @@ namespace libmonkey.parser
             // all Prefix and Infix parser functions start and end with tokens.Current
             // ie. if they parse just one token, they don't advance
             RegisterPrefixParserFn(Token.Tokens.Ident, ParseIdentifier);
+            RegisterPrefixParserFn(Token.Tokens.Int, ParseIntegerLiteral);
         }
 
         // ReSharper disable once UnusedParameter.Local
@@ -45,6 +46,11 @@ namespace libmonkey.parser
         private IExpression ParseIdentifier(IPeekableEnumerator<Token> tokens)
         {
             return new Identifier(tokens.Current);
+        }
+
+        private IExpression ParseIntegerLiteral(IPeekableEnumerator<Token> tokens)
+        {
+            return new IntegerLiteral(tokens.Current);
         }
     }
 }

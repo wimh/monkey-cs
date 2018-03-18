@@ -54,7 +54,9 @@ namespace libmonkey.test
 
             var program = sut.ParseProgram();
             Assert.NotNull(program);
-            Assert.AreEqual(0, program.Statements.Count());
+
+            if (program.Statements.Any())
+                Assert.IsNotInstanceOf<LetStatement>(program.Statements.First());
 
             Assert.AreEqual(expectedError, sut.Errors.First());
         }
